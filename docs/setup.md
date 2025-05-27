@@ -36,7 +36,6 @@ or (if there is a `start` script in package.json):
 npm start
 5. **Open your browser** and visit:  
 [http://localhost:5050](http://localhost:5050)  
-(Change port in `server.js` if you get a port conflict.)
 
 ---
 
@@ -65,7 +64,6 @@ npm start
 - `docs-pruthvi` – Documentation work
 - Other branches for features or fixes as needed
 
-**Always pull the latest changes before starting new work!**
 
 ---
 
@@ -82,12 +80,6 @@ Run VS Code as administrator (Windows) or use `sudo` if necessary (Mac/Linux).
 
 ---
 
-## 6. Contacts/Help
-
-If you face issues:
-- Double-check steps above.
-- Refer to the latest `README.md` or `setup.md`.
-- Contact your team lead (Sushrith), frontend lead (Palak), or docs lead (Pruthvi).
 
 ---
 
