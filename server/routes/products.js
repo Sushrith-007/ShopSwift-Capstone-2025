@@ -18,7 +18,7 @@ function loadProducts() {
   }
 }
 
-// GET /api/products?category=&search=&sort=&page=&limit=&inStock=
+
 router.get('/', (req, res) => {
   let products = loadProducts();
   if (!products) {

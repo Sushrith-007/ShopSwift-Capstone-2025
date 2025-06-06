@@ -10,7 +10,7 @@ import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
 
-// Now start your App function
+
 function App() {
   return (
     <Router>

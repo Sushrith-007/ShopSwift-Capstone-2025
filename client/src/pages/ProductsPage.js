@@ -1,4 +1,3 @@
-// src/pages/ProductsPage.js
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -24,7 +23,7 @@ const CATEGORY_MAP = {
   ]
 };
 
-// Real-world product names for Electronics subcategories
+// product names for Electronics subcategories
 const PRODUCT_NAMES = {
   "Mobiles & Tablets": [
     "iPhone 14 Pro Max",
@@ -122,7 +121,7 @@ const PRODUCT_NAMES = {
     "SteelSeries Rival 5",
     "HP X500 Wired Mouse"
   ],
-   // --- Fashion ---
+   // Fashion 
    "Men's Clothing": [
     "Levi's 511 Slim Jeans",
     "Nike Sportswear Club Fleece Hoodie",
@@ -220,7 +219,7 @@ const PRODUCT_NAMES = {
     "Levi's Sherpa Trucker"
   ],
 
-  // --- Smart Home ---
+  //  Smart Home 
   "Smart Lighting": [
     "Philips Hue White & Color Bulb",
     "Syska Smart LED Bulb",
@@ -318,7 +317,7 @@ const PRODUCT_NAMES = {
     "JBL Link View"
   ],
 
-  // --- Accessories ---
+  // Accessories 
   "Mobile Accessories": [
     "Spigen Ultra Hybrid Phone Case",
     "Anker PowerLine USB-C Cable",
@@ -417,9 +416,9 @@ const PRODUCT_NAMES = {
   ]
 };
 
-// Helper to generate image filename from product name
+
 function productNameToImage(name) {
-  // Remove spaces and special characters, lowercase, and add .jpg
+  
   return name.toLowerCase().replace(/[^a-z0-9]/g, '') + ".jpg";
 }
 
@@ -428,7 +427,7 @@ let productId = 1;
 Object.entries(CATEGORY_MAP).forEach(([mainCat, subcats]) => {
   subcats.forEach(subcat => {
     if (mainCat === "Electronics" && PRODUCT_NAMES[subcat]) {
-      // Use real product names
+      
       PRODUCT_NAMES[subcat].forEach(productName => {
         PRODUCTS.push({
           id: productId++,
@@ -443,14 +442,14 @@ Object.entries(CATEGORY_MAP).forEach(([mainCat, subcats]) => {
         });
       });
     } else {
-      // TODO: Keep or improve the current logic for non-Electronics subcategories
+      
       let [typeA, typeB] = subcat.split(' & ');
       if (!typeB) {
         const words = subcat.split(' ');
         typeA = words[0];
         typeB = words.length > 1 ? words.slice(1).join(' ') : words[0];
       }
-      // 5 of TypeA
+      
       for (let i = 1; i <= 5; i++) {
         PRODUCTS.push({
           id: productId++,
@@ -464,7 +463,7 @@ Object.entries(CATEGORY_MAP).forEach(([mainCat, subcats]) => {
           rating: (3 + Math.random() * 2).toFixed(1)
         });
       }
-      // 5 of TypeB
+      
       for (let i = 1; i <= 5; i++) {
         PRODUCTS.push({
           id: productId++,
@@ -521,7 +520,7 @@ export default function ProductsPage() {
     </div>
   );
 
-  // Only show products if BOTH main and subcategory are selected and showProducts is true
+  
   const canShowProducts = !!(selectedMainCategory && selectedSubCategory && showProducts);
 
   // Filtered Products
@@ -829,7 +828,7 @@ export default function ProductsPage() {
           </>
         ) : (
           <>
-            {/* Nothing selected yet, or only main category is selected: show nothing or a prompt */}
+            {/* Nothing selected yet, or only main category is selected*/}
             <div className="text-[#A0AEC0] py-8 text-center font-sans">
               {selectedMainCategory && !selectedSubCategory
                 ? "Please select a subcategory to view products."

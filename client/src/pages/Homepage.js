@@ -69,7 +69,7 @@ export default function HomePage() {
     return () => clearInterval(timerId);
   }, [dealsCountdown]);
 
-  // Newsletter modal logic: show after 5s or scroll 300px, only once per page session
+  // Newsletter modal logic:  
   useEffect(() => {
     if (modalDismissed) return;
     let shown = false;
@@ -111,7 +111,27 @@ export default function HomePage() {
       <div className="w-full bg-[#E5E5E5] text-[#181818] font-semibold text-center py-2 rounded-b-md mb-4 tracking-wide shadow">
         🚚 Free shipping on orders over $50! | Shop now
       </div>
-      
+
+      {/* HOMEPAGE SHOWCASE VIDEO (Hi-Res, Accessible, Responsive) */}
+      <section className="w-full flex justify-center mb-8">
+        <div className="relative w-full max-w-3xl aspect-w-16 aspect-h-9 rounded-xl overflow-hidden shadow-lg border border-[#E5E7EB]">
+          <video
+            src="http://localhost:5050/assets/showcase.mp4"
+            className="w-full h-full min-h-[300px] rounded-xl object-cover"
+            controls
+            autoPlay
+            muted
+            loop
+            poster="http://localhost:5050/assets/showcase-poster.jpg"
+            aria-label="ShopSwift Product Showcase video"
+            tabIndex="0"
+            playsInline
+            style={{ backgroundColor: "#E5E5E5" }}
+          >
+           <a href="http://localhost:5050/assets/showcase.mp4"></a>.
+          </video>
+        </div>
+      </section>
 
       {/* HERO BANNER */}
       <section className="relative rounded-2xl overflow-hidden mb-12 shadow-md bg-[#B1D0CE] border border-[#E5E5E5]">
