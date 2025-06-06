@@ -121,6 +121,299 @@ const PRODUCT_NAMES = {
     "Apple Magic Mouse 2",
     "SteelSeries Rival 5",
     "HP X500 Wired Mouse"
+  ],
+   // --- Fashion ---
+   "Men's Clothing": [
+    "Levi's 511 Slim Jeans",
+    "Nike Sportswear Club Fleece Hoodie",
+    "H&M Cotton Shirt",
+    "Adidas Tiro Track Pants",
+    "Uniqlo Ultra Light Down Jacket",
+    "Tommy Hilfiger Polo T-Shirt",
+    "GAP Khaki Chinos",
+    "Calvin Klein Classic Suit",
+    "Allen Solly Casual Blazer",
+    "Puma Essential Tee"
+  ],
+  "Women's Clothing": [
+    "Zara Basic V-Neck Dress",
+    "H&M Conscious Blouse",
+    "Forever 21 High-Waist Jeans",
+    "Mango Flowy Midi Skirt",
+    "Levi's Ex-Boyfriend Trucker Jacket",
+    "Vero Moda Ribbed Top",
+    "Only Denim Shorts",
+    "Global Desi Printed Kurta",
+    "W for Women Straight Pants",
+    "Biba Cotton Anarkali"
+  ],
+  "Kids & Baby Wear": [
+    "Carter's Sleep & Play Bodysuit",
+    "Mothercare Baby Romper",
+    "Babyhug Cotton Frock",
+    "H&M Kids Sweatshirt",
+    "LuvLap Baby Sleepsuit",
+    "UCB Boys' Polo Shirt",
+    "FirstCry Baby Pyjamas",
+    "Nike Kids Tracksuit",
+    "GAP Kids Denim Jacket",
+    "Disney Frozen T-shirt"
+  ],
+  "Footwear": [
+    "Adidas Ultraboost 23",
+    "Nike Air Max 270",
+    "Puma Carina Sneakers",
+    "Crocs Classic Clog",
+    "Bata Comfit Sandals",
+    "Woodland Leather Boots",
+    "Skechers Go Walk 6",
+    "Red Tape Formal Shoes",
+    "Converse Chuck Taylor All Star",
+    "Metro Slip-on Loafers"
+  ],
+  "Watches": [
+    "Fossil Gen 6 Smartwatch",
+    "Casio G-Shock GA-2100",
+    "Timex Expedition Scout",
+    "Daniel Wellington Petite",
+    "Titan Neo Analog",
+    "Apple Watch Series 9",
+    "Fastrack Reflex Play+",
+    "Michael Kors Parker",
+    "Seiko 5 Sports Automatic",
+    "Armani Exchange Cayde"
+  ],
+  "Bags & Wallets": [
+    "American Tourister Urban Backpack",
+    "Skybags Canvas Duffle",
+    "Caprese Satchel Bag",
+    "Wildcraft Laptop Backpack",
+    "Tommy Hilfiger Leather Wallet",
+    "Fossil RFID Bifold Wallet",
+    "Baggit Women's Tote",
+    "Samsonite Polycarbonate Luggage",
+    "Lavie Sling Bag",
+    "Puma Classic Gym Sack"
+  ],
+  "Ethnic Wear": [
+    "Manyavar Silk Kurta Pajama",
+    "Biba Printed Salwar Suit",
+    "FabIndia Cotton Saree",
+    "Soch Chanderi Kurta Set",
+    "W for Women Straight Kurta",
+    "Rangriti Rayon Anarkali",
+    "Global Desi Printed Kurta",
+    "Melange by Lifestyle Dupatta Set",
+    "Aurelia Cotton Palazzo",
+    "Neerus Embroidered Lehenga"
+  ],
+  "Winter Wear": [
+    "North Face Thermoball Jacket",
+    "Columbia Fleece Pullover",
+    "H&M Wool-Blend Overcoat",
+    "Decathlon Quechua Parka",
+    "Uniqlo Heattech Top",
+    "GAP Cable Knit Sweater",
+    "Adidas Puffer Vest",
+    "Allen Solly Cardigan",
+    "Woodland Down Jacket",
+    "Levi's Sherpa Trucker"
+  ],
+
+  // --- Smart Home ---
+  "Smart Lighting": [
+    "Philips Hue White & Color Bulb",
+    "Syska Smart LED Bulb",
+    "TP-Link Kasa Smart Light Strip",
+    "Wipro Garnet Smart Batten",
+    "Yeelight Ambiance Lamp",
+    "Mi LED WiFi Smart Bulb",
+    "Nanoleaf Essentials Lightstrip",
+    "Lifx Color A19",
+    "Halonix Prime Smart Bulb",
+    "Wyze Bulb Color"
+  ],
+  "Smart Speakers": [
+    "Amazon Echo Dot (5th Gen)",
+    "Google Nest Mini",
+    "Apple HomePod Mini",
+    "Bose Home Speaker 300",
+    "Sonos One SL",
+    "Harman Kardon Citation One",
+    "Marshall Uxbridge Voice",
+    "Lenovo Smart Clock Essential",
+    "Mi Smart Speaker IR Control",
+    "Zebronics Smart Speaker"
+  ],
+  "Home Security": [
+    "Arlo Pro 4 Wireless Camera",
+    "Ring Video Doorbell 4",
+    "Google Nest Cam (Battery)",
+    "Wyze Cam v3",
+    "TP-Link Tapo C200",
+    "Hikvision Turbo HD DVR",
+    "Mi 360 Home Security Camera",
+    "Eufy Indoor Cam 2K",
+    "Godrej Spotlight Camera",
+    "D-Link WiFi Motion Sensor"
+  ],
+  "Thermostats & HVAC": [
+    "Google Nest Learning Thermostat",
+    "Ecobee SmartThermostat",
+    "Honeywell T9 Smart",
+    "Emerson Sensi Touch",
+    "Mysa Smart Thermostat",
+    "Bosch Connected Control",
+    "Amazon Smart Thermostat",
+    "Tado Smart AC Control",
+    "Sensibo Sky Controller",
+    "Wyze Smart WiFi Thermostat"
+  ],
+  "Robot Vacuums": [
+    "iRobot Roomba i7+",
+    "Ecovacs Deebot N8 Pro",
+    "Roborock S7 MaxV",
+    "Mi Robot Vacuum Mop 2 Pro",
+    "Eufy RoboVac G30",
+    "Dreame D9 Max",
+    "ILIFE V9e Pro",
+    "Shark IQ Robot",
+    "Viomi SE Vacuum",
+    "Realme TechLife Robot"
+  ],
+  "Smart Plugs & Switches": [
+    "Wipro 16A WiFi Smart Plug",
+    "TP-Link HS100 Smart Plug",
+    "Amazon Smart Plug",
+    "Sonoff Basic WiFi Switch",
+    "Philips Hue Smart Plug",
+    "Syska Wi-Fi Smart Plug",
+    "D-Link DSP-W118",
+    "Zebronics Smart Switch",
+    "Oakter Mini Plug",
+    "Portronics Power Plate 7"
+  ],
+  "Smart Kitchen Appliances": [
+    "Instant Pot Duo 7-in-1",
+    "Xiaomi Smart Air Fryer",
+    "Philips Viva Collection Juicer",
+    "NutriBullet Pro Blender",
+    "Kent OTG Oven",
+    "Preethi Zodiac Mixer Grinder",
+    "Mi Smart Kettle Pro",
+    "Hamilton Beach Toaster",
+    "Wonderchef Nutri-Pot",
+    "Bajaj Smart Rice Cooker"
+  ],
+  "Voice Assistants & Hubs": [
+    "Google Nest Hub (2nd Gen)",
+    "Amazon Echo Show 8",
+    "Apple iPad Mini (Hub Mode)",
+    "Lenovo Smart Tab M10",
+    "Samsung SmartThings Hub",
+    "Xiaomi Smart Home Hub",
+    "Sonos Move (Assistant)",
+    "Facebook Portal Mini",
+    "Echo Flex Voice Module",
+    "JBL Link View"
+  ],
+
+  // --- Accessories ---
+  "Mobile Accessories": [
+    "Spigen Ultra Hybrid Phone Case",
+    "Anker PowerLine USB-C Cable",
+    "Portronics Powerbank 20000mAh",
+    "Boat Rockerz 255 Neckband",
+    "Samsung Wireless Charger Duo",
+    "Otterbox Defender Case",
+    "Ringke Fusion-X Case",
+    "ESR Camera Lens Protector",
+    "MI Car Charger Pro",
+    "Urban Armor Gear Plyo Case"
+  ],
+  "Laptop Accessories": [
+    "Logitech M350 Pebble Mouse",
+    "HP K500F Wired Keyboard",
+    "Targus Classic Laptop Sleeve",
+    "Lapcare Adjustable Stand",
+    "Dell Pro Backpack",
+    "Lenovo 65W USB-C Adapter",
+    "Portronics Cooling Pad",
+    "Macally USB-C Hub",
+    "AmazonBasics Wireless Mouse",
+    "Kensington Laptop Lock"
+  ],
+  "Fashion Accessories": [
+    "Ray-Ban Aviator Sunglasses",
+    "Tommy Hilfiger Leather Belt",
+    "Fossil Carlie Bracelet",
+    "Calvin Klein Scarf",
+    "Titan Raga Watch",
+    "Gucci GG Marmont Wallet",
+    "Hidesign Leather Keychain",
+    "Michael Kors Rose Gold Earrings",
+    "Daniel Wellington Cuff",
+    "Puma Essential Cap"
+  ],
+  "Wearable Tech": [
+    "Apple Watch SE 2nd Gen",
+    "Fitbit Charge 6",
+    "Garmin Vivosmart 5",
+    "Mi Band 7",
+    "Samsung Galaxy Watch 6",
+    "Amazfit GTS 4 Mini",
+    "Realme Band 2",
+    "Honor Band 7",
+    "Noise ColorFit Pro 4",
+    "Boat Xtend Smartwatch"
+  ],
+  "Camera Accessories": [
+    "SanDisk Extreme 128GB SD Card",
+    "Lowepro Fastpack Camera Bag",
+    "AmazonBasics Tripod 60-inch",
+    "Godox TT685 Flash",
+    "Joby GorillaPod 3K Kit",
+    "Manfrotto Mini Tripod",
+    "Hoya 58mm UV Filter",
+    "Neewer Camera Cleaning Kit",
+    "Peak Design Slide Lite Strap",
+    "DJI Osmo Pocket Extension Rod"
+  ],
+  "Gaming Accessories": [
+    "Logitech G502 HERO Mouse",
+    "Razer BlackWidow V4 Keyboard",
+    "SteelSeries QcK Gaming Mousepad",
+    "Corsair HS50 PRO Headset",
+    "Xbox Wireless Controller",
+    "HyperX Cloud Stinger",
+    "Nintendo Switch Pro Controller",
+    "MSI Force GC30 Gamepad",
+    "Redgear Pro Wireless Controller",
+    "Turtle Beach Recon 70 Headset"
+  ],
+  "Chargers & Power Adapters": [
+    "Anker Nano II 65W Charger",
+    "Apple 30W USB-C Power Adapter",
+    "Belkin 3-in-1 Charger Stand",
+    "MI 27W SonicCharge Adapter",
+    "Samsung 45W Super Fast Charger",
+    "Aukey Omnia 100W Adapter",
+    "Portronics Adapto 22",
+    "Realme 65W SuperDart Charger",
+    "Ambrane Multi-Port Charger",
+    "Stuffcool 20W PD Charger"
+  ],
+  "Bluetooth Devices & Dongles": [
+    "TP-Link UB500 Bluetooth Adapter",
+    "Logitech Bluetooth Audio Receiver",
+    "Portronics Harmonics Twins S6",
+    "MI Bluetooth Receiver",
+    "Jabra Link 370 USB Adapter",
+    "HP Bluetooth 5.0 Dongle",
+    "Zebronics BT4444 USB Dongle",
+    "Boat Stone 350 Bluetooth Speaker",
+    "AmazonBasics USB Bluetooth Adapter",
+    "Creative BT-W3 Audio Transmitter"
   ]
 };
 
@@ -209,8 +502,8 @@ export default function ProductsPage() {
 
   // Breadcrumbs
   const breadcrumbs = (
-    <div className="mb-4 text-gray-500 text-sm">
-      <Link to="/" className="hover:underline text-blue-700">Home</Link>
+    <div className="mb-4 text-[#6B7280] text-sm font-sans">
+      <Link to="/" className="hover:underline text-[#274690]">Home</Link>
       <span className="mx-2">/</span>
       <span>Products</span>
       {selectedMainCategory && (
@@ -273,21 +566,21 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8">
+    <div className="container mx-auto px-4 py-8 flex flex-col md:flex-row gap-8 font-sans bg-[#F8F9FA] min-h-screen">
       {/* Sidebar */}
       <aside className="w-44 md:w-52 mr-0 md:mr-2 flex flex-col items-start">
         {/* Back to Collection button */}
         {canShowProducts && (
           <button
             onClick={handleBackToCollection}
-            className="w-full mb-4 px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300 font-semibold text-left"
+            className="w-full mb-4 px-4 py-2 bg-[#F7C948] rounded-md hover:bg-[#ffe59c] font-semibold text-left text-[#22223B] border border-[#E5E7EB] shadow-md"
           >
             &larr; Back to Collection
           </button>
         )}
         {/* Main Category Dropdown */}
         <div className="mb-4 w-full">
-          <label htmlFor="main-category-select" className="block text-sm font-semibold text-blue-700 mb-1">
+          <label htmlFor="main-category-select" className="block text-sm font-semibold text-[#274690] mb-1">
             Select Category
           </label>
           <select
@@ -300,7 +593,7 @@ export default function ProductsPage() {
               setShowProducts(false);
               setRatingFilter(null);
             }}
-            className="w-full px-3 py-2 rounded border border-blue-400 text-blue-700 font-semibold"
+            className="w-full px-3 py-2 rounded border border-[#E5E7EB] text-[#274690] font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]"
           >
             <option value="">--</option>
             {Object.keys(CATEGORY_MAP).map(cat => (
@@ -311,7 +604,7 @@ export default function ProductsPage() {
         {/* Subcategory Dropdown */}
         {selectedMainCategory && (
           <div className="mb-4 w-full">
-            <label htmlFor="subcategory-select" className="block text-sm font-semibold text-indigo-700 mb-1">
+            <label htmlFor="subcategory-select" className="block text-sm font-semibold text-[#6C63FF] mb-1">
               Select Subcategory
             </label>
             <select
@@ -323,7 +616,7 @@ export default function ProductsPage() {
                 setShowProducts(!!value);
                 setRatingFilter(null);
               }}
-              className="w-full px-3 py-2 rounded border border-indigo-400 text-indigo-700 font-semibold"
+              className="w-full px-3 py-2 rounded border border-[#E5E7EB] text-[#6C63FF] font-semibold bg-white focus:outline-none focus:ring-2 focus:ring-[#6C63FF]"
             >
               <option value="">--</option>
               {CATEGORY_MAP[selectedMainCategory].map(subcat => (
@@ -335,46 +628,46 @@ export default function ProductsPage() {
         {/* Show by Ratings */}
         {canShowProducts && (
           <div className="mb-6 w-full">
-            <h4 className="font-semibold text-indigo-700 mb-2">Show by Ratings</h4>
+            <h4 className="font-semibold text-[#6C63FF] mb-2">Show by Ratings</h4>
             <div className="flex md:flex-col gap-2">
               <button
                 onClick={() => setRatingFilter("top")}
                 className={`px-3 py-1 rounded-full font-medium border text-base text-left
                   ${ratingFilter === "top"
-                    ? "bg-indigo-600 text-white shadow"
-                    : "bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-100"
+                    ? "bg-[#6C63FF] text-white shadow-md"
+                    : "bg-white text-[#274690] border-[#E5E7EB] hover:bg-[#F8F9FA]"
                   } transition`}
               >
-                <span className="mr-1 text-yellow-500" aria-label="5 stars" title="5 stars">★★★★★</span>
+                <span className="mr-1 text-[#F7C948]" aria-label="5 stars" title="5 stars">★★★★★</span>
                 Top Rated
               </button>
               <button
                 onClick={() => setRatingFilter("mid")}
                 className={`px-3 py-1 rounded-full font-medium border text-base text-left
                   ${ratingFilter === "mid"
-                    ? "bg-indigo-600 text-white shadow"
-                    : "bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-100"
+                    ? "bg-[#6C63FF] text-white shadow-md"
+                    : "bg-white text-[#274690] border-[#E5E7EB] hover:bg-[#F8F9FA]"
                   } transition`}
               >
-                <span className="mr-1 text-yellow-500" aria-label="4 stars" title="3–5 stars">★★★★☆</span>
+                <span className="mr-1 text-[#F7C948]" aria-label="4 stars" title="3–5 stars">★★★★☆</span>
                 Mid Rated
               </button>
               <button
                 onClick={() => setRatingFilter("low")}
                 className={`px-3 py-1 rounded-full font-medium border text-base text-left
                   ${ratingFilter === "low"
-                    ? "bg-indigo-600 text-white shadow"
-                    : "bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-100"
+                    ? "bg-[#6C63FF] text-white shadow-md"
+                    : "bg-white text-[#274690] border-[#E5E7EB] hover:bg-[#F8F9FA]"
                   } transition`}
               >
-                <span className="mr-1 text-yellow-500" aria-label="2 stars" title="1–3 stars">★★☆☆☆</span>
+                <span className="mr-1 text-[#F7C948]" aria-label="2 stars" title="1–3 stars">★★☆☆☆</span>
                 Low Rated
               </button>
             </div>
             {ratingFilter && (
               <button
                 onClick={() => setRatingFilter(null)}
-                className="mt-3 px-3 py-1 rounded-full font-semibold border border-red-500 text-red-600 hover:bg-red-100 transition"
+                className="mt-3 px-3 py-1 rounded-full font-semibold border border-[#F7C948] text-[#274690] hover:bg-[#F8F9FA] transition"
               >
                 Clear Rating Filter
               </button>
@@ -392,8 +685,8 @@ export default function ProductsPage() {
           <>
             {/* Intro Header */}
             <section className="mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-blue-700 mb-2">Explore Our Full Collection</h1>
-              <p className="text-lg text-gray-700">
+              <h1 className="text-3xl md:text-4xl font-bold text-[#274690] mb-2 font-sans">Explore Our Full Collection</h1>
+              <p className="text-lg text-[#22223B]">
                 From cutting-edge electronics to the latest fashion trends, everything you need is just a scroll away.
                 Use the filters to narrow down your perfect find.
               </p>
@@ -401,14 +694,14 @@ export default function ProductsPage() {
 
             {/* Flash Deal Banner */}
             {showBanner && (
-              <div className="mb-6 flex items-center bg-gradient-to-r from-yellow-200 to-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow relative">
-                <span className="font-bold text-lg text-yellow-700 mr-4">⚡ Flash Deal:</span>
-                <span className="text-yellow-800 font-medium">
+              <div className="mb-6 flex items-center bg-[#F7C948] text-[#22223B] border-l-4 border-[#E5E7EB] p-4 rounded shadow-md relative font-sans">
+                <span className="font-bold text-lg mr-4">⚡ Flash Deal:</span>
+                <span className="font-semibold">
                   Get 20% off Smart Home Devices — Today Only!
                 </span>
                 <button
                   onClick={() => setShowBanner(false)}
-                  className="absolute right-4 top-4 text-yellow-500 hover:text-yellow-700 font-bold text-lg"
+                  className="absolute right-4 top-4 text-[#274690] hover:text-[#6C63FF] font-bold text-lg"
                   aria-label="Dismiss"
                 >&times;</button>
               </div>
@@ -417,51 +710,51 @@ export default function ProductsPage() {
             {/* Featured Collections / Top Picks */}
             <section className="mb-10 grid md:grid-cols-2 gap-8">
               {/* Staff Picks in Electronics */}
-              <div className="bg-white p-5 rounded-lg shadow flex-1">
+              <div className="bg-white p-5 rounded-lg shadow-md flex-1 border border-[#E5E7EB]">
                 <div className="flex items-center mb-4">
                   <span className="text-xl mr-2">🎧</span>
-                  <h2 className="text-lg font-bold text-blue-700">Staff Picks in Electronics</h2>
+                  <h2 className="text-lg font-bold text-[#274690]">Staff Picks in Electronics</h2>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {staffPicks.map(product => (
                     <div
                       key={product.id}
-                      className="flex flex-col items-center bg-blue-50 rounded-lg p-3 hover:shadow-lg"
+                      className="flex flex-col items-center bg-[#F8F9FA] rounded-lg p-3 hover:shadow-lg border border-[#E5E7EB]"
                     >
                       <img src={product.image} alt={product.name} className="w-20 h-20 object-contain mb-1" />
-                      <div className="font-medium">{product.name}</div>
-                      <div className="text-indigo-600 font-semibold">${product.price}</div>
+                      <div className="font-medium text-[#22223B]">{product.name}</div>
+                      <div className="text-[#6C63FF] font-bold">${product.price}</div>
                     </div>
                   ))}
                 </div>
-                <Link to="/products?category=Electronics" className="text-blue-600 hover:underline text-sm mt-3 block">See More &rarr;</Link>
+                <Link to="/products?category=Electronics" className="text-[#6C63FF] hover:underline text-sm mt-3 block">See More &rarr;</Link>
               </div>
               {/* Trending in Fashion */}
-              <div className="bg-white p-5 rounded-lg shadow flex-1">
+              <div className="bg-white p-5 rounded-lg shadow-md flex-1 border border-[#E5E7EB]">
                 <div className="flex items-center mb-4">
                   <span className="text-xl mr-2">🛍️</span>
-                  <h2 className="text-lg font-bold text-pink-700">Trending in Fashion</h2>
+                  <h2 className="text-lg font-bold text-[#6C63FF]">Trending in Fashion</h2>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   {trendingFashion.map(product => (
                     <div
                       key={product.id}
-                      className="flex flex-col items-center bg-pink-50 rounded-lg p-3 hover:shadow-lg"
+                      className="flex flex-col items-center bg-[#F8F9FA] rounded-lg p-3 hover:shadow-lg border border-[#E5E7EB]"
                     >
                       <img src={product.image} alt={product.name} className="w-20 h-20 object-contain mb-1" />
-                      <div className="font-medium">{product.name}</div>
-                      <div className="text-pink-700 font-semibold">${product.price}</div>
+                      <div className="font-medium text-[#22223B]">{product.name}</div>
+                      <div className="text-[#6C63FF] font-bold">${product.price}</div>
                     </div>
                   ))}
                 </div>
-                <Link to="/products?category=Fashion" className="text-pink-600 hover:underline text-sm mt-3 block">See More &rarr;</Link>
+                <Link to="/products?category=Fashion" className="text-[#6C63FF] hover:underline text-sm mt-3 block">See More &rarr;</Link>
               </div>
             </section>
 
             {/* SEO-Optimized Description */}
-            <section className="mt-16 mb-6 p-6 bg-blue-50 rounded-lg shadow">
-              <h3 className="text-xl font-bold text-blue-700 mb-2">About Our Products</h3>
-              <p className="text-gray-700">
+            <section className="mt-16 mb-6 p-6 bg-[#F8F9FA] rounded-lg shadow-md border border-[#E5E7EB]">
+              <h3 className="text-xl font-bold text-[#274690] mb-2">About Our Products</h3>
+              <p className="text-[#22223B]">
                 At ShopSwift, we curate only the highest quality electronics, fashion, smart home devices, and lifestyle accessories.
                 Every product is vetted for performance, style, and value. Explore our ever-growing inventory and enjoy seamless shopping.
               </p>
@@ -476,12 +769,12 @@ export default function ProductsPage() {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="border border-blue-200 px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300 w-52"
+                className="border border-[#E5E7EB] px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6C63FF] w-52 bg-white text-[#22223B] placeholder-[#274690] font-sans"
               />
               <select
                 value={sortOption}
                 onChange={(e) => setSortOption(e.target.value)}
-                className="border border-blue-200 px-4 py-2 rounded-lg shadow-sm focus:outline-none w-44"
+                className="border border-[#E5E7EB] px-4 py-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6C63FF] w-44 bg-white text-[#22223B] font-sans"
               >
                 {SORT_OPTIONS.map(opt => (
                   <option value={opt.value} key={opt.value}>{opt.label}</option>
@@ -490,8 +783,8 @@ export default function ProductsPage() {
             </div>
 
             {/* Product Count */}
-            <div className="mb-4 text-gray-600 text-sm">
-              Showing <span className="font-bold">{filtered.length}</span> products in <span className="font-bold">{selectedSubCategory}</span>
+            <div className="mb-4 text-[#6B7280] text-sm font-sans">
+              Showing <span className="font-bold text-[#274690]">{filtered.length}</span> products in <span className="font-bold text-[#274690]">{selectedSubCategory}</span>
             </div>
 
             {/* Product Grid */}
@@ -499,7 +792,7 @@ export default function ProductsPage() {
               {filtered.map((product) => (
                 <div
                   key={product.id}
-                  className="cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all flex flex-col items-center p-6 border border-gray-50 group hover:-translate-y-1"
+                  className="cursor-pointer bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all flex flex-col items-center p-6 border border-[#E5E7EB] group hover:-translate-y-1"
                   onClick={() => navigate(`/products/${product.id}`)}
                   tabIndex={0}
                   onKeyPress={e => (e.key === 'Enter') && navigate(`/products/${product.id}`)}
@@ -510,18 +803,18 @@ export default function ProductsPage() {
                     className="w-44 h-44 object-contain mb-4 rounded-lg shadow"
                     loading="lazy"
                   />
-                  <h3 className="font-semibold text-xl mb-2 group-hover:text-blue-700">{product.name}</h3>
-                  <p className="text-gray-500 mb-2 text-center line-clamp-1">{product.description}</p>
-                  <span className="text-indigo-600 text-lg font-bold mb-3">${product.price}</span>
+                  <h3 className="font-semibold text-xl mb-2 text-[#274690] group-hover:text-[#6C63FF]">{product.name}</h3>
+                  <p className="text-[#6B7280] mb-2 text-center line-clamp-1">{product.description}</p>
+                  <span className="text-[#6C63FF] text-lg font-bold mb-3">${product.price}</span>
                   <div className="flex gap-2 mt-2">
                     <button
-                      className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full shadow hover:bg-blue-700 hover:text-white transition"
+                      className="text-xs bg-[#F8F9FA] text-[#274690] px-3 py-1 rounded-full shadow hover:bg-[#6C63FF] hover:text-white transition border border-[#E5E7EB]"
                       onClick={e => { e.stopPropagation(); /* Quick View */ }}
                     >
                       Quick View
                     </button>
                     <button
-                      className="text-xs bg-blue-600 text-white px-3 py-1 rounded-full shadow hover:bg-indigo-700 transition"
+                      className="text-xs bg-[#6C63FF] text-white px-3 py-1 rounded-full shadow-md hover:bg-[#274690] transition"
                       onClick={e => { e.stopPropagation(); /* addToCart(product) */ }}
                     >
                       Add to Cart
@@ -531,13 +824,13 @@ export default function ProductsPage() {
               ))}
             </div>
             {filtered.length === 0 && (
-              <div className="text-gray-500 py-10 text-center">No products found.</div>
+              <div className="text-[#6B7280] py-10 text-center">No products found.</div>
             )}
           </>
         ) : (
           <>
             {/* Nothing selected yet, or only main category is selected: show nothing or a prompt */}
-            <div className="text-gray-400 py-8 text-center">
+            <div className="text-[#A0AEC0] py-8 text-center font-sans">
               {selectedMainCategory && !selectedSubCategory
                 ? "Please select a subcategory to view products."
                 : "Please select a category to begin."}
