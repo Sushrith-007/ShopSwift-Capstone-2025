@@ -488,6 +488,7 @@ const SORT_OPTIONS = [
   { value: "name_desc", label: "Name: Z → A" },
 ];
 
+export { PRODUCTS }; // <-- Add this line
 export default function ProductsPage() {
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);

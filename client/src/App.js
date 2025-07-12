@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-import HomePage from './pages/HomePage';
+import Homepage from './pages/Homepage';
 import ProductsPage from './pages/ProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -18,7 +18,7 @@ function App() {
         <Navbar />
         <main className="flex-1">
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Homepage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/products/:id" element={<ProductDetailPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
