@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import AddToCartButton from "../components/AddToCartButton";
 
 export default function HomePage() {
   // Dummy data – replace with real data from your backend/API later
@@ -44,9 +45,12 @@ export default function HomePage() {
             <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-lg transition p-4 flex flex-col items-center">
               <img src={product.image} alt={product.name} className="w-28 h-28 object-cover mb-3 rounded" />
               <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-              <p className="text-gray-500 mb-2">{product.description}</p>
-              <span className="text-blue-700 font-bold mb-2">${product.price}</span>
-              <Link to={`/products/${product.id}`} className="text-blue-600 hover:underline">View Details</Link>
+              <p className="text-gray-500 mb-2 text-center text-sm">{product.description}</p>
+              <span className="text-blue-700 font-bold mb-3">${product.price}</span>
+              <div className="flex flex-col gap-2 w-full">
+                <AddToCartButton product={product} size="small" />
+                <Link to={`/products/${product.id}`} className="text-blue-600 hover:underline text-center text-sm">View Details</Link>
+              </div>
             </div>
           ))}
         </div>
