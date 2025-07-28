@@ -112,11 +112,45 @@ const RegisterPage = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('http://localhost:5050/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          password: formData.password,
+          phone: formData.phone
+        }),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Registration successful! Please check your email for verification.');
+        // Redirect to login page
+        window.location.href = '/login';
+      } else {
+        if (data.errors && Array.isArray(data.errors)) {
+          const errorMap = {};
+          data.errors.forEach(error => {
+            errorMap[error.path] = error.msg;
+          });
+          setErrors(errorMap);
+        } else {
+          setErrors({ general: data.message || 'Registration failed. Please try again.' });
+        }
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setErrors({ general: 'Network error. Please check your connection and try again.' });
+    } finally {
       setIsLoading(false);
-      alert('Registration successful! (This is a demo)');
-    }, 1500);
+    }
   };
 
   const handleSocialRegister = (provider) => {
@@ -189,6 +223,22 @@ const RegisterPage = () => {
 
           {/* Registration Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* General Error Message */}
+            {errors.general && (
+              <div className="rounded-md bg-red-50 p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-800">{errors.general}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>

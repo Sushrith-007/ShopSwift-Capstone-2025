@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AppProvider } from './contexts/AppContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -19,27 +20,29 @@ import WishlistPage from './pages/WishlistPage';
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50">
-        <Navbar />
-        <main className="flex-1">
-          <Routes>
-            <Route path="/" element={<Homepage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/products/:id" element={<ProductDetailPage />} />
-            <Route path="/categories" element={<CategoriesPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/checkout" element={<CheckoutPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/wishlist" element={<WishlistPage />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <AppProvider>
+      <Router>
+        <div className="min-h-screen flex flex-col bg-gray-50">
+          <Navbar />
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Homepage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route path="/categories" element={<CategoriesPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/wishlist" element={<WishlistPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AppProvider>
   );
 }
 
