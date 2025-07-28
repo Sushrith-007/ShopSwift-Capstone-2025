@@ -2,14 +2,25 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    // Debug: Log the connection string (hide password for security)
+    const mongoUri = process.env.MONGODB_URI;
+    const safeUri = mongoUri ? mongoUri.replace(/:([^:@]+)@/, ':****@') : 'NOT_FOUND';
+    console.log('🔍 Attempting to connect to MongoDB...');
+    console.log('🔍 Connection URI (masked):', safeUri);
+    
+    const connectionOptions = {
       // Use only supported options for newer MongoDB versions
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
       maxPoolSize: 10, // Maintain up to 10 socket connections
-    });
+    };
+    
+    console.log('🔍 Connection options:', connectionOptions);
+    
+    const conn = await mongoose.connect(mongoUri, connectionOptions);
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    console.log(`✅ Database Name: ${conn.connection.name}`);
     
     // Handle connection events
     mongoose.connection.on('error', (err) => {
@@ -38,6 +49,7 @@ const connectDB = async () => {
 
   } catch (error) {
     console.error('❌ Database connection failed:', error.message);
+    console.error('❌ Full error:', error);
     
     // Exit process with failure
     process.exit(1);
