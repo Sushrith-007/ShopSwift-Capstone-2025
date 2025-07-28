@@ -1,4 +1,43 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Check if STRIPE_SECRET_KEY is provided, if not use a dummy key or handle gracefully
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+if (!stripeSecretKey) {
+  console.warn('STRIPE_SECRET_KEY not provided. Stripe functionality will be disabled.');
+  // Export a mock stripe object for development
+  module.exports = {
+    stripe: null,
+    createPaymentIntent: () => Promise.reject(new Error('Stripe not configured')),
+    confirmPaymentIntent: () => Promise.reject(new Error('Stripe not configured')),
+    retrievePaymentIntent: () => Promise.reject(new Error('Stripe not configured')),
+    cancelPaymentIntent: () => Promise.reject(new Error('Stripe not configured')),
+    createRefund: () => Promise.reject(new Error('Stripe not configured')),
+    createCustomer: () => Promise.reject(new Error('Stripe not configured')),
+    retrieveCustomer: () => Promise.reject(new Error('Stripe not configured')),
+    updateCustomer: () => Promise.reject(new Error('Stripe not configured')),
+    createSetupIntent: () => Promise.reject(new Error('Stripe not configured')),
+    listPaymentMethods: () => Promise.reject(new Error('Stripe not configured')),
+    detachPaymentMethod: () => Promise.reject(new Error('Stripe not configured')),
+    verifyWebhookSignature: () => { throw new Error('Stripe not configured'); },
+    calculateApplicationFee: (amount, feePercentage = 2.9) => Math.round(amount * (feePercentage / 100) * 100),
+    formatAmount: (amount, currency = 'usd') => new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(amount / 100),
+    getSupportedPaymentMethods: (country = 'US') => {
+      const supportedMethods = {
+        US: ['card', 'us_bank_account', 'link'],
+        CA: ['card', 'acss_debit'],
+        GB: ['card', 'bacs_debit'],
+        EU: ['card', 'sepa_debit', 'giropay', 'ideal', 'sofort'],
+        IN: ['card', 'upi'],
+        AU: ['card', 'au_becs_debit'],
+      };
+      return supportedMethods[country.toUpperCase()] || ['card'];
+    },
+    createProduct: () => Promise.reject(new Error('Stripe not configured')),
+    createPrice: () => Promise.reject(new Error('Stripe not configured')),
+  };
+  return;
+}
+
+const stripe = require('stripe')(stripeSecretKey);
 
 // Create a payment intent
 const createPaymentIntent = async (amount, currency = 'usd', metadata = {}) => {

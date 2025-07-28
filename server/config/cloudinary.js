@@ -2,12 +2,54 @@ const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 
-// Configure Cloudinary
-cloudinary.config({
+// Check if required Cloudinary environment variables are provided
+const cloudinaryConfig = {
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+};
+
+if (!cloudinaryConfig.cloud_name || !cloudinaryConfig.api_key || !cloudinaryConfig.api_secret) {
+  console.warn('Cloudinary environment variables not provided. Image upload functionality will be disabled.');
+  
+  // Create mock multer middleware that handles files locally or rejects
+  const mockMulter = {
+    single: (fieldname) => (req, res, next) => {
+      req.file = null;
+      next();
+    },
+    array: (fieldname, maxCount) => (req, res, next) => {
+      req.files = [];
+      next();
+    },
+    fields: (fields) => (req, res, next) => {
+      req.files = {};
+      next();
+    },
+  };
+
+  module.exports = {
+    cloudinary: null,
+    uploadProductImages: mockMulter,
+    uploadCategoryImage: mockMulter,
+    uploadUserAvatar: mockMulter,
+    deleteImage: () => Promise.reject(new Error('Cloudinary not configured')),
+    deleteMultipleImages: () => Promise.reject(new Error('Cloudinary not configured')),
+    getImageInfo: () => Promise.reject(new Error('Cloudinary not configured')),
+    transformImageUrl: (publicId) => `/placeholder-image.jpg`,
+    generateResponsiveUrls: (publicId) => ({
+      thumbnail: '/placeholder-image.jpg',
+      small: '/placeholder-image.jpg',
+      medium: '/placeholder-image.jpg',
+      large: '/placeholder-image.jpg',
+      original: '/placeholder-image.jpg',
+    }),
+  };
+  return;
+}
+
+// Configure Cloudinary
+cloudinary.config(cloudinaryConfig);
 
 // Storage configuration for different types of uploads
 const createStorage = (folder, allowedFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp']) => {
