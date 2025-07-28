@@ -51,125 +51,54 @@ if (!cloudinaryConfig.cloud_name || !cloudinaryConfig.api_key || !cloudinaryConf
 // Configure Cloudinary
 cloudinary.config(cloudinaryConfig);
 
-// Storage configuration for different types of uploads
-const createStorage = (folder, allowedFormats = ['jpg', 'jpeg', 'png', 'gif', 'webp']) => {
-  return new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: `shopswift/${folder}`,
-      allowed_formats: allowedFormats,
-      transformation: [
-        { width: 1200, height: 1200, crop: 'limit' },
-        { quality: 'auto:good' },
-        { format: 'auto' }
-      ],
-      public_id: (req, file) => {
-        const timestamp = Date.now();
-        const originalName = file.originalname.split('.')[0];
-        return `${originalName}_${timestamp}`;
-      },
-    },
-  });
-};
-
-// Different storage configurations
-const productImageStorage = createStorage('products');
-const categoryImageStorage = createStorage('categories');
-const userAvatarStorage = createStorage('users/avatars');
-
-// File filter function
-const fileFilter = (req, file, cb) => {
-  // Check file type
-  if (file.mimetype.startsWith('image/')) {
-    cb(null, true);
-  } else {
-    cb(new Error('Only image files are allowed!'), false);
+// Configure storage
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'shopswift',
+    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+    transformation: [{ width: 500, height: 500, crop: 'limit' }]
   }
-};
-
-// Upload middleware configurations
-const uploadProductImages = multer({
-  storage: productImageStorage,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB
-    files: 10, // Maximum 10 files
-  },
-  fileFilter: fileFilter,
 });
 
-const uploadCategoryImage = multer({
-  storage: categoryImageStorage,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 5 * 1024 * 1024, // 5MB
-    files: 1, // Single file
-  },
-  fileFilter: fileFilter,
-});
+// Configure upload middleware
+const upload = multer({ storage: storage });
 
-const uploadUserAvatar = multer({
-  storage: userAvatarStorage,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 2 * 1024 * 1024, // 2MB
-    files: 1, // Single file
-  },
-  fileFilter: fileFilter,
-});
-
-// Utility functions
+// Helper functions
 const deleteImage = async (publicId) => {
-  try {
-    const result = await cloudinary.uploader.destroy(publicId);
-    return result;
-  } catch (error) {
-    console.error('Error deleting image from Cloudinary:', error);
-    throw error;
-  }
+  return await cloudinary.uploader.destroy(publicId);
 };
 
 const deleteMultipleImages = async (publicIds) => {
-  try {
-    const result = await cloudinary.api.delete_resources(publicIds);
-    return result;
-  } catch (error) {
-    console.error('Error deleting multiple images from Cloudinary:', error);
-    throw error;
-  }
+  return await cloudinary.api.delete_resources(publicIds);
 };
 
 const getImageInfo = async (publicId) => {
-  try {
-    const result = await cloudinary.api.resource(publicId);
-    return result;
-  } catch (error) {
-    console.error('Error getting image info from Cloudinary:', error);
-    throw error;
-  }
+  return await cloudinary.api.resource(publicId);
 };
 
-// Transform image URL with specific transformations
-const transformImageUrl = (publicId, transformations = {}) => {
-  return cloudinary.url(publicId, transformations);
+const transformImageUrl = (publicId) => {
+  return cloudinary.url(publicId, {
+    secure: true,
+    width: 500,
+    crop: 'fill'
+  });
 };
 
-// Generate different sizes for responsive images
-const generateResponsiveUrls = (publicId) => {
-  return {
-    thumbnail: transformImageUrl(publicId, { width: 150, height: 150, crop: 'fill' }),
-    small: transformImageUrl(publicId, { width: 300, height: 300, crop: 'limit' }),
-    medium: transformImageUrl(publicId, { width: 600, height: 600, crop: 'limit' }),
-    large: transformImageUrl(publicId, { width: 1200, height: 1200, crop: 'limit' }),
-    original: transformImageUrl(publicId, { quality: 'auto:best' }),
-  };
-};
+const generateResponsiveUrls = (publicId) => ({
+  thumbnail: cloudinary.url(publicId, { width: 100, height: 100, crop: 'fill' }),
+  small: cloudinary.url(publicId, { width: 300, crop: 'scale' }),
+  medium: cloudinary.url(publicId, { width: 500, crop: 'scale' }),
+  large: cloudinary.url(publicId, { width: 800, crop: 'scale' }),
+  original: cloudinary.url(publicId)
+});
 
 module.exports = {
   cloudinary,
-  uploadProductImages,
-  uploadCategoryImage,
-  uploadUserAvatar,
+  upload, // Export the upload instance directly
   deleteImage,
   deleteMultipleImages,
   getImageInfo,
   transformImageUrl,
-  generateResponsiveUrls,
+  generateResponsiveUrls
 };

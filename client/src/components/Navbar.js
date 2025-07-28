@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useApp } from "../contexts/AppContext";
 
 export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const navigate = useNavigate();
-
-  // Mock data - in real app this would come from context/state
-  const cartItemCount = 3;
-  const wishlistCount = 4;
-  const isLoggedIn = false; // Change to true to see logged-in state
+  
+  const { state, actions } = useApp();
+  const { isAuthenticated, user, cartCount, wishlistCount } = state;
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -20,10 +19,28 @@ export default function Navbar() {
     }
   };
 
-  const handleSignOut = () => {
-    // Handle sign out logic
-    setIsUserMenuOpen(false);
-    alert('Signed out successfully!');
+  const handleSignOut = async () => {
+    try {
+      // Call logout API endpoint
+      const token = localStorage.getItem('token');
+      if (token) {
+        await fetch('http://localhost:5050/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include'
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear local state regardless of API call success
+      actions.logout();
+      setIsUserMenuOpen(false);
+      navigate('/');
+    }
   };
 
   return (
@@ -110,23 +127,23 @@ export default function Navbar() {
               <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6m0 0l-.4-2M7 13h10M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
               </svg>
-              {cartItemCount > 0 && (
+              {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartItemCount > 9 ? '9+' : cartItemCount}
+                  {cartCount > 9 ? '9+' : cartCount}
                 </span>
               )}
             </Link>
 
             {/* User Menu */}
             <div className="relative">
-              {isLoggedIn ? (
+              {isAuthenticated ? (
                 <div>
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                     className="flex items-center space-x-1 text-gray-700 hover:text-blue-600 transition-colors duration-200"
                   >
                     <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
-                      JD
+                      {user?.name?.charAt(0)}
                     </div>
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -259,7 +276,7 @@ export default function Navbar() {
                 className="block px-3 py-2 text-gray-700 hover:text-blue-600 font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Cart ({cartItemCount})
+                Cart ({cartCount})
               </Link>
               <Link
                 to="/wishlist"
@@ -270,7 +287,7 @@ export default function Navbar() {
               </Link>
 
               {/* Mobile User Links */}
-              {!isLoggedIn && (
+              {!isAuthenticated && (
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <Link
                     to="/login"
@@ -289,7 +306,7 @@ export default function Navbar() {
                 </div>
               )}
 
-              {isLoggedIn && (
+              {isAuthenticated && (
                 <div className="border-t border-gray-200 pt-4 mt-4">
                   <Link
                     to="/profile"

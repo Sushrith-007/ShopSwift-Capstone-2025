@@ -9,10 +9,10 @@ const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const mongoose = require('mongoose');
 
 // Import database connection
-const { connectDB } = require('./config/database');
-
+const connectDB = require('./config/database'); // Update this line
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 const { swaggerSetup } = require('./config/swagger');
@@ -33,7 +33,7 @@ console.log("Node Environment:", process.env.NODE_ENV);
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-// Connect to database
+// Initialize database connection
 connectDB();
 
 // Security middleware

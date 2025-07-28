@@ -2,11 +2,7 @@ const express = require('express');
 const { body } = require('express-validator');
 const { protect, authorize } = require('../middleware/auth');
 const { handleValidationErrors } = require('../middleware/errorHandler');
-const {
-  uploadProductImages,
-  uploadCategoryImage,
-  uploadUserAvatar
-} = require('../config/cloudinary');
+const { upload, cloudinary } = require('../config/cloudinary');
 const {
   uploadProductImages: uploadProductImagesController,
   deleteProductImage,
@@ -20,14 +16,31 @@ const {
 
 const router = express.Router();
 
+// Product Images Upload Route
+router.post('/products', protect, upload.array('images', 10), async (req, res) => {
+  try {
+    if (!req.files) {
+      return res.status(400).json({ success: false, message: 'No files uploaded' });
+    }
+    // Process uploaded files
+    const uploadedFiles = req.files.map(file => ({
+      url: file.path,
+      publicId: file.filename
+    }));
+    res.status(200).json({ success: true, data: uploadedFiles });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // Product image routes
 router.post(
   '/products/:id/images',
   protect,
   authorize('admin'),
-  uploadProductImages.array('images', 10), // Max 10 images
+  upload.array('images', 10), // Max 10 images
   [
-    body('alt').optional().trim().isLength({ max: 255 }).withMessage('Alt text must be less than 255 characters'),
+    body('alt').optional().trim().isLength({ max: 255 })
   ],
   handleValidationErrors,
   uploadProductImagesController
@@ -52,9 +65,9 @@ router.post(
   '/categories/:id/image',
   protect,
   authorize('admin'),
-  uploadCategoryImage.single('image'),
+  upload.single('image'),
   [
-    body('alt').optional().trim().isLength({ max: 255 }).withMessage('Alt text must be less than 255 characters'),
+    body('alt').optional().trim().isLength({ max: 255 })
   ],
   handleValidationErrors,
   uploadCategoryImageController
@@ -71,7 +84,7 @@ router.delete(
 router.post(
   '/avatar',
   protect,
-  uploadUserAvatar.single('avatar'),
+  upload.single('avatar'),
   uploadUserAvatarController
 );
 

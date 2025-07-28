@@ -1,39 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-// Mock cart data - in real app this would come from context/state management
-const mockCartItems = [
-  {
-    id: 1,
-    name: "Smart Watch",
-    price: 79.99,
-    quantity: 2,
-    image: "http://localhost:5050/assets/smartwatch.jpg",
-    category: "Electronics",
-    inStock: true
-  },
-  {
-    id: 2,
-    name: "Wireless Earbuds",
-    price: 59.99,
-    quantity: 1,
-    image: "http://localhost:5050/assets/earbuds.jpg",
-    category: "Electronics",
-    inStock: false
-  },
-  {
-    id: 3,
-    name: "Fitness Tracker",
-    price: 45.99,
-    quantity: 1,
-    image: "http://localhost:5050/assets/fitnesstracker.jpg",
-    category: "Electronics",
-    inStock: true
-  }
-];
+import { useApp } from '../contexts/AppContext';
 
 const CartPage = () => {
-  const [cartItems, setCartItems] = useState(mockCartItems);
+  const { state, actions } = useApp();
+  const { cartItems, cartCount } = state;
+  
   const [isLoading, setIsLoading] = useState(true);
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState(null);
@@ -46,15 +18,11 @@ const CartPage = () => {
 
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return;
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
+    actions.updateCartQuantity(id, newQuantity);
   };
 
   const removeItem = (id) => {
-    setCartItems(items => items.filter(item => item.id !== id));
+    actions.removeFromCart(id);
   };
 
   const applyPromoCode = () => {

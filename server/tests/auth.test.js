@@ -9,8 +9,12 @@ const MONGODB_TEST_URI = process.env.MONGODB_TEST_URI || 'mongodb://localhost:27
 describe('Authentication Endpoints', () => {
   beforeAll(async () => {
     // Connect to test database
-    await mongoose.connect(MONGODB_TEST_URI);
-  });
+    await mongoose.connect(MONGODB_TEST_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      maxPoolSize: 10,
+    });
+  }); // Added missing closing brace
 
   afterAll(async () => {
     // Clean up and close connection
