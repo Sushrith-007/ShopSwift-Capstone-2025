@@ -1,442 +1,477 @@
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const ErrorResponse = require('../utils/errorResponse');
-const { asyncHandler } = require('../middleware/errorHandler');
-const sendEmail = require('../utils/sendEmail');
-const { generateTokens, setTokenCookie } = require('../utils/auth');
+const { sendWelcomeEmail, sendEmailVerification, sendPasswordResetEmail } = require('../utils/sendEmail');
+const { validationResult } = require('express-validator');
+
+// Generate JWT Token
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+};
+
+// Create and send token response
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
+  };
+
+  res.cookie('jwt', token, cookieOptions);
+
+  // Remove password from output
+  user.password = undefined;
+
+  res.status(statusCode).json({
+    success: true,
+    token,
+    data: {
+      user
+    }
+  });
+};
 
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
-const register = asyncHandler(async (req, res, next) => {
-  const { firstName, lastName, email, password, phone } = req.body;
-
-  // Check if user already exists
-  const existingUser = await User.findOne({ email: email.toLowerCase() });
-  if (existingUser) {
-    return next(new ErrorResponse('User with this email already exists', 400));
-  }
-
-  // Create user
-  const user = await User.create({
-    firstName,
-    lastName,
-    email: email.toLowerCase(),
-    password,
-    phone
-  });
-
-  // Generate email verification token
-  const verificationToken = user.getEmailVerificationToken();
-  await user.save({ validateBeforeSave: false });
-
-  // Send verification email
+const register = async (req, res, next) => {
   try {
-    const verificationUrl = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
-    
-    await sendEmail({
-      email: user.email,
-      subject: 'Welcome to ShopSwift - Verify Your Email',
-      template: 'emailVerification',
-      data: {
-        name: user.firstName,
-        verificationUrl,
-        appName: 'ShopSwift'
-      }
+    const { firstName, lastName, email, password, phone } = req.body;
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: 'User already exists with this email'
+      });
+    }
+
+    // Create user
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      phone
     });
 
-    // Generate JWT token
-    const token = user.getSignedJwtToken();
+    // Generate email verification token
+    const verifyToken = user.getEmailVerificationToken();
+    await user.save({ validateBeforeSave: false });
 
-    // Set cookie and send response
-    setTokenCookie(res, token);
+    // Create verification URL
+    const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verifyToken}`;
 
-    res.status(201).json({
-      success: true,
-      message: 'User registered successfully. Please check your email to verify your account.',
-      token,
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-        isEmailVerified: user.isEmailVerified
-      }
-    });
+    try {
+      // Send welcome and verification emails
+      await sendWelcomeEmail(user.email, user.firstName);
+      await sendEmailVerification(user.email, user.firstName, verifyURL);
+
+      createSendToken(user, 201, res);
+    } catch (error) {
+      user.emailVerificationToken = undefined;
+      user.emailVerificationExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      console.error('Email sending failed:', error);
+      
+      // Still create the user but inform about email issue
+      createSendToken(user, 201, res);
+    }
   } catch (error) {
-    console.error('Email sending failed:', error);
-    
-    // If email fails, still return success but mention email issue
-    const token = user.getSignedJwtToken();
-    setTokenCookie(res, token);
-
-    res.status(201).json({
-      success: true,
-      message: 'User registered successfully. Email verification failed to send, please request a new one.',
-      token,
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-        isEmailVerified: user.isEmailVerified
-      }
+    console.error('Registration error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during registration'
     });
   }
-});
+};
 
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
-const login = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
 
-  // Validate email & password
-  if (!email || !password) {
-    return next(new ErrorResponse('Please provide an email and password', 400));
-  }
-
-  // Check for user and include password field
-  const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
-
-  if (!user) {
-    return next(new ErrorResponse('Invalid credentials', 401));
-  }
-
-  // Check if account is locked
-  if (user.isLocked) {
-    return next(new ErrorResponse('Account is temporarily locked due to too many failed login attempts', 423));
-  }
-
-  // Check password
-  const isMatch = await user.matchPassword(password);
-
-  if (!isMatch) {
-    // Increment login attempts
-    await user.incLoginAttempts();
-    return next(new ErrorResponse('Invalid credentials', 401));
-  }
-
-  // Reset login attempts on successful login
-  if (user.loginAttempts > 0) {
-    await user.resetLoginAttempts();
-  }
-
-  // Update last login
-  user.lastLogin = new Date();
-  await user.save({ validateBeforeSave: false });
-
-  // Generate JWT token
-  const token = user.getSignedJwtToken();
-
-  // Set cookie and send response
-  setTokenCookie(res, token);
-
-  res.status(200).json({
-    success: true,
-    message: 'Login successful',
-    token,
-    user: {
-      id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      role: user.role,
-      isEmailVerified: user.isEmailVerified,
-      lastLogin: user.lastLogin
+    // Check for user
+    const user = await User.findOne({ email }).select('+password');
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
     }
-  });
-});
 
-// @desc    Logout user / clear cookie
+    // Check if password matches
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid credentials'
+      });
+    }
+
+    // Check if account is active
+    if (!user.isActive) {
+      return res.status(401).json({
+        success: false,
+        message: 'Account has been deactivated'
+      });
+    }
+
+    // Update last login
+    user.lastLogin = Date.now();
+    await user.save({ validateBeforeSave: false });
+
+    createSendToken(user, 200, res);
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during login'
+    });
+  }
+};
+
+// @desc    Log user out
 // @route   POST /api/auth/logout
 // @access  Private
-const logout = asyncHandler(async (req, res, next) => {
-  res.cookie('token', 'none', {
+const logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true
   });
 
   res.status(200).json({
     success: true,
-    message: 'User logged out successfully'
+    message: 'Logged out successfully'
   });
-});
+};
 
 // @desc    Get current logged in user
 // @route   GET /api/auth/me
 // @access  Private
-const getMe = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id)
-    .populate('wishlist', 'name price images slug')
-    .populate('cart.product', 'name price images slug stock');
+const getMe = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
 
-  res.status(200).json({
-    success: true,
-    user
-  });
-});
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    console.error('Get me error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
 
 // @desc    Update user profile
 // @route   PUT /api/auth/me
 // @access  Private
-const updateProfile = asyncHandler(async (req, res, next) => {
-  const fieldsToUpdate = {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    phone: req.body.phone,
-    dateOfBirth: req.body.dateOfBirth,
-    gender: req.body.gender
-  };
-
-  // Remove undefined fields
-  Object.keys(fieldsToUpdate).forEach(key => 
-    fieldsToUpdate[key] === undefined && delete fieldsToUpdate[key]
-  );
-
-  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
-    new: true,
-    runValidators: true
-  });
-
-  res.status(200).json({
-    success: true,
-    message: 'Profile updated successfully',
-    user
-  });
-});
-
-// @desc    Update password
-// @route   PUT /api/auth/updatepassword
-// @access  Private
-const updatePassword = asyncHandler(async (req, res, next) => {
-  const { currentPassword, newPassword } = req.body;
-
-  if (!currentPassword || !newPassword) {
-    return next(new ErrorResponse('Please provide current and new password', 400));
-  }
-
-  const user = await User.findById(req.user.id).select('+password');
-
-  // Check current password
-  if (!(await user.matchPassword(currentPassword))) {
-    return next(new ErrorResponse('Current password is incorrect', 400));
-  }
-
-  user.password = newPassword;
-  await user.save();
-
-  const token = user.getSignedJwtToken();
-  setTokenCookie(res, token);
-
-  res.status(200).json({
-    success: true,
-    message: 'Password updated successfully',
-    token
-  });
-});
-
-// @desc    Forgot password
-// @route   POST /api/auth/forgotpassword
-// @access  Public
-const forgotPassword = asyncHandler(async (req, res, next) => {
-  const user = await User.findOne({ email: req.body.email.toLowerCase() });
-
-  if (!user) {
-    return next(new ErrorResponse('There is no user with that email', 404));
-  }
-
-  // Get reset token
-  const resetToken = user.getResetPasswordToken();
-  await user.save({ validateBeforeSave: false });
-
-  // Create reset url
-  const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/resetpassword/${resetToken}`;
-
+const updateProfile = async (req, res, next) => {
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'ShopSwift Password Reset Request',
-      template: 'passwordReset',
-      data: {
-        name: user.firstName,
-        resetUrl,
-        appName: 'ShopSwift'
-      }
+    const fieldsToUpdate = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      phone: req.body.phone,
+      dateOfBirth: req.body.dateOfBirth,
+      gender: req.body.gender
+    };
+
+    // Remove undefined fields
+    Object.keys(fieldsToUpdate).forEach(key => 
+      fieldsToUpdate[key] === undefined && delete fieldsToUpdate[key]
+    );
+
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true
     });
 
     res.status(200).json({
       success: true,
-      message: 'Email sent successfully'
+      data: user
     });
   } catch (error) {
-    console.error('Reset email failed:', error);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    console.error('Update profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during profile update'
+    });
+  }
+};
+
+// @desc    Update password
+// @route   PUT /api/auth/update-password
+// @access  Private
+const updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
+
+    // Check current password
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return res.status(401).json({
+        success: false,
+        message: 'Current password is incorrect'
+      });
+    }
+
+    user.password = req.body.newPassword;
+    await user.save();
+
+    createSendToken(user, 200, res);
+  } catch (error) {
+    console.error('Update password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during password update'
+    });
+  }
+};
+
+// @desc    Forgot password
+// @route   POST /api/auth/forgot-password
+// @access  Public
+const forgotPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user found with that email'
+      });
+    }
+
+    // Get reset token
+    const resetToken = user.getResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    return next(new ErrorResponse('Email could not be sent', 500));
+    // Create reset URL
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`;
+
+    try {
+      await sendPasswordResetEmail(user.email, user.firstName, resetUrl);
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset email sent'
+      });
+    } catch (error) {
+      console.error('Password reset email failed:', error);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+
+      await user.save({ validateBeforeSave: false });
+
+      return res.status(500).json({
+        success: false,
+        message: 'Email could not be sent'
+      });
+    }
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
   }
-});
+};
 
 // @desc    Reset password
-// @route   PUT /api/auth/resetpassword/:resettoken
+// @route   PUT /api/auth/reset-password/:resettoken
 // @access  Public
-const resetPassword = asyncHandler(async (req, res, next) => {
-  // Get hashed token
-  const resetPasswordToken = crypto
-    .createHash('sha256')
-    .update(req.params.resettoken)
-    .digest('hex');
+const resetPassword = async (req, res, next) => {
+  try {
+    // Get hashed token
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(req.params.resettoken)
+      .digest('hex');
 
-  const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $gt: Date.now() }
-  });
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    });
 
-  if (!user) {
-    return next(new ErrorResponse('Invalid or expired token', 400));
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired token'
+      });
+    }
+
+    // Set new password
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    createSendToken(user, 200, res);
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during password reset'
+    });
   }
-
-  // Set new password
-  user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-  await user.save();
-
-  const token = user.getSignedJwtToken();
-  setTokenCookie(res, token);
-
-  res.status(200).json({
-    success: true,
-    message: 'Password reset successful',
-    token
-  });
-});
+};
 
 // @desc    Verify email
 // @route   GET /api/auth/verify-email/:token
 // @access  Public
-const verifyEmail = asyncHandler(async (req, res, next) => {
-  // Get hashed token
-  const emailVerificationToken = crypto
-    .createHash('sha256')
-    .update(req.params.token)
-    .digest('hex');
+const verifyEmail = async (req, res, next) => {
+  try {
+    const emailVerificationToken = crypto
+      .createHash('sha256')
+      .update(req.params.token)
+      .digest('hex');
 
-  const user = await User.findOne({
-    emailVerificationToken,
-    emailVerificationExpire: { $gt: Date.now() }
-  });
+    const user = await User.findOne({
+      emailVerificationToken,
+      emailVerificationExpire: { $gt: Date.now() }
+    });
 
-  if (!user) {
-    return next(new ErrorResponse('Invalid or expired verification token', 400));
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired verification token'
+      });
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpire = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      success: true,
+      message: 'Email verified successfully'
+    });
+  } catch (error) {
+    console.error('Email verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during email verification'
+    });
   }
-
-  // Mark email as verified
-  user.isEmailVerified = true;
-  user.emailVerificationToken = undefined;
-  user.emailVerificationExpire = undefined;
-  await user.save({ validateBeforeSave: false });
-
-  res.status(200).json({
-    success: true,
-    message: 'Email verified successfully'
-  });
-});
+};
 
 // @desc    Resend email verification
 // @route   POST /api/auth/resend-verification
 // @access  Private
-const resendEmailVerification = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
-
-  if (user.isEmailVerified) {
-    return next(new ErrorResponse('Email is already verified', 400));
-  }
-
-  // Generate new verification token
-  const verificationToken = user.getEmailVerificationToken();
-  await user.save({ validateBeforeSave: false });
-
-  // Create verification url
-  const verificationUrl = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verificationToken}`;
-
+const resendEmailVerification = async (req, res, next) => {
   try {
-    await sendEmail({
-      email: user.email,
-      subject: 'ShopSwift - Verify Your Email',
-      template: 'emailVerification',
-      data: {
-        name: user.firstName,
-        verificationUrl,
-        appName: 'ShopSwift'
-      }
-    });
+    const user = await User.findById(req.user.id);
 
-    res.status(200).json({
-      success: true,
-      message: 'Verification email sent successfully'
-    });
+    if (user.isEmailVerified) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is already verified'
+      });
+    }
+
+    const verifyToken = user.getEmailVerificationToken();
+    await user.save({ validateBeforeSave: false });
+
+    const verifyURL = `${req.protocol}://${req.get('host')}/api/auth/verify-email/${verifyToken}`;
+
+    try {
+      await sendEmailVerification(user.email, user.firstName, verifyURL);
+
+      res.status(200).json({
+        success: true,
+        message: 'Verification email sent'
+      });
+    } catch (error) {
+      user.emailVerificationToken = undefined;
+      user.emailVerificationExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      return res.status(500).json({
+        success: false,
+        message: 'Email could not be sent'
+      });
+    }
   } catch (error) {
-    console.error('Verification email failed:', error);
-    return next(new ErrorResponse('Email could not be sent', 500));
+    console.error('Resend verification error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
   }
-});
+};
 
 // @desc    Update user preferences
 // @route   PUT /api/auth/preferences
 // @access  Private
-const updatePreferences = asyncHandler(async (req, res, next) => {
-  const { preferences } = req.body;
+const updatePreferences = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { preferences: req.body },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
 
-  const user = await User.findByIdAndUpdate(
-    req.user.id,
-    { preferences },
-    { new: true, runValidators: true }
-  );
-
-  res.status(200).json({
-    success: true,
-    message: 'Preferences updated successfully',
-    preferences: user.preferences
-  });
-});
+    res.status(200).json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    console.error('Update preferences error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during preferences update'
+    });
+  }
+};
 
 // @desc    Deactivate account
 // @route   PUT /api/auth/deactivate
 // @access  Private
-const deactivateAccount = asyncHandler(async (req, res, next) => {
-  const { password } = req.body;
+const deactivateAccount = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
 
-  if (!password) {
-    return next(new ErrorResponse('Please provide your password to deactivate account', 400));
+    // Verify password
+    if (!(await user.matchPassword(req.body.password))) {
+      return res.status(401).json({
+        success: false,
+        message: 'Password is incorrect'
+      });
+    }
+
+    user.isActive = false;
+    await user.save({ validateBeforeSave: false });
+
+    res.status(200).json({
+      success: true,
+      message: 'Account deactivated successfully'
+    });
+  } catch (error) {
+    console.error('Deactivate account error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during account deactivation'
+    });
   }
-
-  const user = await User.findById(req.user.id).select('+password');
-
-  // Verify password
-  if (!(await user.matchPassword(password))) {
-    return next(new ErrorResponse('Password is incorrect', 400));
-  }
-
-  // Deactivate account
-  user.isActive = false;
-  await user.save({ validateBeforeSave: false });
-
-  // Clear cookie
-  res.cookie('token', 'none', {
-    expires: new Date(Date.now() + 10 * 1000),
-    httpOnly: true
-  });
-
-  res.status(200).json({
-    success: true,
-    message: 'Account deactivated successfully'
-  });
-});
+};
 
 module.exports = {
   register,
